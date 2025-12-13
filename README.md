@@ -1,41 +1,156 @@
-P.F Final Project
+# Console Based Quiz Game (C++)
 
-This repository contains a C++ trivia quiz program with easy/medium/hard questions across various categories (maths, science, history, sports).
+This is a **console-based quiz game** written in **C++**.
+The game runs in the **command prompt / terminal** and uses text files for questions and high scores.
 
-Files
-- Main source file.cpp: The main entrypoint for the program.
-- easy_*.txt, med_*.txt, hard_*.txt: Question files for different difficulties and categories.
-- high_scorers.txt: Leaderboard storage.
+---
 
-How to push this repository to GitHub (Windows PowerShell)
-1. Install Git for Windows if needed: https://git-scm.com/download/win
-2. Open PowerShell, navigate to the project folder:
+## Features
 
-    cd "C:\Users\Lio\Desktop\C++ Programs\P. F final project"
+* Three difficulty levels
 
-3. Configure git user (if not set):
+  * Easy
+  * Medium
+  * Hard
 
-    git config --global user.name "Your Name"
-    git config --global user.email "youremail@example.com"
+* Four quiz subjects
 
-4. Initialize, add, and commit files:
+  * Science
+  * Maths
+  * Sports
+  * History
 
-    git init
-    git add .
-    git commit -m "Initial commit: Add quiz project files"
+* Timer based questions (10 seconds per question)
 
-5. Add your GitHub remote and push to the main branch:
+* Skip and Swap options (limited)
 
-    git branch -M main
-    git remote add origin https://github.com/M-Ali05/P.F-final-project.git
-    git push -u origin main
+* Bonus points for correct answer streaks
 
-If push fails due to authentication, create a Personal Access Token (PAT) in your GitHub settings and run:
+* Leaderboard saved in a file
 
-    git remote set-url origin https://<username>:<PAT>@github.com/M-Ali05/P.F-final-project.git
-    git push -u origin main
+* Random questions every time
 
-Notes
-- Replace <username> and <PAT> with your GitHub username and token.
-- After the initial push, you can use `git push` to push changes.
-- If you use an IDE, you can also use built-in Git integration.
+---
+
+## How the Game Works
+
+1. Run the program
+2. Choose:
+
+   * Start Quiz
+   * View Leaderboard
+   * Exit
+3. Enter your name
+4. Select difficulty and subject
+5. Answer MCQs by pressing **A, B, C, or D**
+6. You can:
+
+   * Press **S** to skip a question (limited)
+   * Press **W** to swap a question (limited)
+7. Final score is shown and saved if it is high enough
+
+---
+
+## Files Required
+
+Make sure these files are in the **same folder** as the program:
+
+### Question Files
+
+* easy_science.txt
+
+* easy_maths.txt
+
+* easy_sports.txt
+
+* easy_history.txt
+
+* med_science.txt
+
+* med_maths.txt
+
+* med_sports.txt
+
+* med_history.txt
+
+* hard_science.txt
+
+* hard_maths.txt
+
+* hard_sports.txt
+
+* hard_history.txt
+
+Each question must be written in **this format**:
+
+```
+Question text
+A) option
+B) option
+C) option
+D) option
+: X
+```
+
+### High Score File
+
+* high_scorers.txt
+
+Example:
+
+```
+ali,15
+ahmed,20
+sara,18
+fatima,12
+hassan,10
+```
+
+---
+
+## How to Compile and Run
+
+### Using Dev-C++ (Windows)
+
+1. Open the `.cpp` file
+2. Compile and Run
+
+### Using Command Prompt (Windows)
+
+```
+g++ quiz.cpp -o quiz
+quiz
+```
+
+---
+
+## Requirements
+
+* Windows OS
+* C++ Compiler (GCC / Dev-C++)
+* `<windows.h>` and `<conio.h>` (Windows only)
+
+---
+
+## Notes
+
+* Timer input uses keyboard hit detection
+* Works only on Windows due to system libraries
+* Scores can go negative on wrong answers
+* Leaderboard stores top 5 scores
+
+---
+
+## Author
+
+Made as a **console-based C++ project** for learning:
+
+* File handling
+* Arrays and strings
+* Functions
+* Randomization
+* Game logic
+
+---
+
+* Help you upload this properly on GitHub
