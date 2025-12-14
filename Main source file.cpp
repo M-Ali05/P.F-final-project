@@ -163,18 +163,8 @@ void easy_mode(){
         cout << "Question " << count_q << ":" << endl;
         cout << "----------------------------------------" << endl;
         cout << q_text << endl;
-        
-        string prompt = "Enter your answer (A-D)";
-        if(skips > 0 && n_q < 9)
-            prompt += " or S to skip";
-        if(swaps > 0 && n_q < 9)
-            prompt += " or W to swap";
-        prompt += ": ";
-        cout << prompt << flush;
-            
 
-        correct = toupper(block[col + 1]);
-
+        correct = toupper(block[col + 2]);
         
         Answer = toupper(timer());
 
@@ -197,7 +187,7 @@ void easy_mode(){
             cout << endl;
 			col = block.rfind(':');
             q_text = block.substr(0, col);
-            correct = toupper(block[col + 1]);
+            correct = toupper(block[col + 2]);
             cout << q_text;
             Answer = timer();
             Answer = toupper(Answer);
@@ -256,12 +246,7 @@ void medium_mode(){
         cout << "----------------------------------------" << endl;
         cout << q_text << endl;
 
-        correct = toupper(block[col + 1]);
-
-        if(skips > 0 && n_q < 9)
-            cout << "Or Press S to skip: ";
-        if(swaps > 0 && n_q < 9)
-            cout << "Or Press W to swap: ";
+        correct = toupper(block[col + 2]);
 
         Answer = toupper(timer());
 
@@ -288,7 +273,7 @@ void medium_mode(){
             cout << endl;
 			col = block.rfind(':');
             q_text = block.substr(0, col);
-            correct = toupper(block[col + 1]);
+            correct = toupper(block[col + 2]);
             cout << q_text;
             Answer = timer();
             Answer = toupper(Answer);
@@ -342,18 +327,12 @@ void hard_mode(){
 
         int col = block.rfind(':');
         string q_text = block.substr(0, col);
-        correct = toupper(block[col + 1]);
         cout << endl << "----------------------------------------" << endl;
         cout << "Question " << count_q << ":" << endl;
         cout << "----------------------------------------" << endl;
         cout << q_text << endl;
 
-        correct = toupper(block[col + 1]);
-
-        if(skips > 0 && n_q < 9)
-            cout << "Or Press S to skip: ";
-        if(swaps > 0 && n_q < 9)
-            cout << "Or Press W to swap: ";
+        correct = toupper(block[col + 2]);
 
         Answer = toupper(timer());
 
@@ -380,7 +359,7 @@ void hard_mode(){
 			cout << endl;
 			col = block.rfind(':');
             q_text = block.substr(0, col);
-            correct = toupper(block[col + 1]);
+            correct = toupper(block[col + 2]);
             cout << q_text;
             Answer = timer();
             Answer = toupper(Answer);
