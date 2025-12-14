@@ -89,7 +89,7 @@ A) option
 B) option
 C) option
 D) option
-: X
+:X
 ```
 
 ### High Score File
