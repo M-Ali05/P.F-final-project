@@ -26,6 +26,12 @@ void easy_mode();
 void medium_mode();
 void hard_mode();
 
+void clear_keyboard_buffer(){
+    while(kbhit()){
+        getch();
+    }
+}
+
 const int TOTAL_SIZE = 20;
 string main_str[TOTAL_SIZE];
 string name;
@@ -39,6 +45,7 @@ int count_q = 0, n_q = 0;
 int score = 0;
 int Count = 0;
 int swaps = 2, skips = 2;
+int available_questions = 0;
 
 int main() {
     char numeric, choice;
@@ -98,27 +105,43 @@ void random(int totalSize, const string &f_name, string main_str[], string selec
     ifstream file(f_name.c_str());
     if (!file) {
         cout << "file not found" << endl;
+        available_questions = 0;
         return;
     }
 
+    // Read only COMPLETE questions (6 lines per question). If file ends early,
+    // we stop instead of creating partial/empty questions.
     while(n < totalSize){
         block = "";
+        bool full = true;
         for(int j = 0; j < lines_per_question; j++) {
             if(getline(file, line))
                 block += line + "\n";
+            else{
+                full = false;
+                break;
+            }
         }
+        if(!full)
+            break;
         main_str[n] = block;
         n++;
     }
+    available_questions = n;
 
-    for(int i = 0; i < 12;){
-        int index = rand() % totalSize;
+    // Pick up to 12 unique questions from what we actually read.
+    int pickCount = (available_questions < 12) ? available_questions : 12;
+    for(int i = 0; i < pickCount;){
+        int index = rand() % available_questions;
         if(find(unique, index)){
             continue;
         }
         selected_str[i] = main_str[index];
         unique[i] = index;
         i++;
+    }
+    for(int i = pickCount; i < 12; i++){
+        selected_str[i] = "";
     }
 }
 
@@ -134,6 +157,8 @@ char timer(void){
     char c = '\0';
     bool if_key = true;
     int sec = 10;
+    // Clear any previously buffered keys (e.g., Enter) so they don't affect this question.
+    clear_keyboard_buffer();
     for(int i = sec; (i > 0 && if_key); i--){
         cout << "\r" << setw(50) << i << " seconds left" << flush;
         Sleep(1000);
@@ -142,6 +167,8 @@ char timer(void){
             if_key = false;
         }
     }
+    // Also clear anything typed after the first keypress.
+    clear_keyboard_buffer();
     return c;
 }
 
@@ -152,8 +179,13 @@ void easy_mode(){
     random(TOTAL_SIZE, f_name, main_str, selected_str);
 
     count_q = 0; n_q = 0; score = 0; Count = 0; swaps = 2; skips = 2;
+    int max_questions = (available_questions < 10) ? available_questions : 10;
+    if(max_questions < 2){
+        cout << endl << "Not enough questions in file: " << f_name << endl;
+        return;
+    }
 
-    while(n_q < 10){
+    while(n_q < max_questions){
         block = selected_str[count_q];
         count_q++;
 
@@ -163,8 +195,18 @@ void easy_mode(){
         cout << "Question " << count_q << ":" << endl;
         cout << "----------------------------------------" << endl;
         cout << q_text << endl;
+        
+        string prompt = "Enter your answer (A-D)";
+        if(skips > 0 && n_q < (max_questions - 1))
+            prompt += " or S to skip";
+        if(swaps > 0 && n_q < (max_questions - 1))
+            prompt += " or W to swap";
+        prompt += " (press key only, no Enter): ";
+        cout << prompt << flush;
+            
 
-        correct = toupper(block[col + 2]);
+        correct = toupper(block[col + 1]);
+
         
         Answer = toupper(timer());
 
@@ -176,18 +218,14 @@ void easy_mode(){
         if(Answer == 'W' && swaps > 0){
             swaps--;
             skip_st = block;
-            if(swaps == 1){
-                block = selected_str[9];
-                selected_str[9] = skip_st;
-            }
-            else{
-                block = selected_str[8];
-                selected_str[8] = skip_st;
-            }
+            int idx = (swaps == 1) ? (max_questions - 1) : (max_questions - 2);
+            if(idx < 0) idx = 0;
+            block = selected_str[idx];
+            selected_str[idx] = skip_st;
             cout << endl;
 			col = block.rfind(':');
             q_text = block.substr(0, col);
-            correct = toupper(block[col + 2]);
+            correct = toupper(block[col + 1]);
             cout << q_text;
             Answer = timer();
             Answer = toupper(Answer);
@@ -234,8 +272,13 @@ void medium_mode(){
     random(TOTAL_SIZE, f_name, main_str, selected_str);
 
     count_q = 0; n_q = 0; score = 0; Count = 0; swaps = 2; skips = 2;
+    int max_questions = (available_questions < 10) ? available_questions : 10;
+    if(max_questions < 2){
+        cout << endl << "Not enough questions in file: " << f_name << endl;
+        return;
+    }
 
-    while(n_q < 10){
+    while(n_q < max_questions){
         block = selected_str[count_q];
         count_q++;
 
@@ -246,7 +289,14 @@ void medium_mode(){
         cout << "----------------------------------------" << endl;
         cout << q_text << endl;
 
-        correct = toupper(block[col + 2]);
+        correct = toupper(block[col + 1]);
+
+        cout << "Enter your answer (A-D)";
+        if(skips > 0 && n_q < (max_questions - 1))
+            cout << " or S to skip";
+        if(swaps > 0 && n_q < (max_questions - 1))
+            cout << " or W to swap";
+        cout << " (press key only, no Enter): ";
 
         Answer = toupper(timer());
 
@@ -260,6 +310,7 @@ void medium_mode(){
             skip_st = block;
             int index = n_q - 3;
             if(index < 0) index = 0;
+            if(index >= max_questions) index = max_questions - 1;
             if(swaps == 1){
                 block = selected_str[index];
                 selected_str[index] = skip_st;
@@ -267,13 +318,14 @@ void medium_mode(){
             else{
                 int index2 = n_q - 4;
                 if(index2 < 0) index2 = 0;
+                if(index2 >= max_questions) index2 = max_questions - 1;
                 block = selected_str[index2];
                 selected_str[index2] = skip_st;
             }
             cout << endl;
 			col = block.rfind(':');
             q_text = block.substr(0, col);
-            correct = toupper(block[col + 2]);
+            correct = toupper(block[col + 1]);
             cout << q_text;
             Answer = timer();
             Answer = toupper(Answer);
@@ -320,19 +372,32 @@ void hard_mode(){
     random(TOTAL_SIZE, f_name, main_str, selected_str);
 
     count_q = 0; n_q = 0; score = 0; Count = 0; swaps = 2; skips = 2;
+    int max_questions = (available_questions < 10) ? available_questions : 10;
+    if(max_questions < 2){
+        cout << endl << "Not enough questions in file: " << f_name << endl;
+        return;
+    }
 
-    while(n_q < 10){
+    while(n_q < max_questions){
         block = selected_str[count_q];
         count_q++;
 
         int col = block.rfind(':');
         string q_text = block.substr(0, col);
+        correct = toupper(block[col + 1]);
         cout << endl << "----------------------------------------" << endl;
         cout << "Question " << count_q << ":" << endl;
         cout << "----------------------------------------" << endl;
         cout << q_text << endl;
 
-        correct = toupper(block[col + 2]);
+        correct = toupper(block[col + 1]);
+
+        cout << "Enter your answer (A-D)";
+        if(skips > 0 && n_q < (max_questions - 1))
+            cout << " or S to skip";
+        if(swaps > 0 && n_q < (max_questions - 1))
+            cout << " or W to swap";
+        cout << " (press key only, no Enter): ";
 
         Answer = toupper(timer());
 
@@ -346,6 +411,7 @@ void hard_mode(){
             skip_st = block;
             int index = n_q - 3;
             if(index < 0) index = 0;
+            if(index >= max_questions) index = max_questions - 1;
             if(swaps == 1){
                 block = selected_str[index];
                 selected_str[index] = skip_st;
@@ -353,13 +419,14 @@ void hard_mode(){
             else{
                 int index2 = n_q - 4;
                 if(index2 < 0) index2 = 0;
+                if(index2 >= max_questions) index2 = max_questions - 1;
                 block = selected_str[index2];
                 selected_str[index2] = skip_st;
             }
 			cout << endl;
 			col = block.rfind(':');
             q_text = block.substr(0, col);
-            correct = toupper(block[col + 2]);
+            correct = toupper(block[col + 1]);
             cout << q_text;
             Answer = timer();
             Answer = toupper(Answer);
@@ -552,3 +619,4 @@ char valid_subject(){
 
     return numeric;
 }
+
