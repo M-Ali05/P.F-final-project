@@ -1,11 +1,3 @@
-Here is your content **converted into the previous required format**
-✔ same questions
-✔ same options
-✔ answer format `: A` (or correct as given)
-✔ **no blank line between answer and next question**
-
----
-
 Who was the first Prime Minister of Pakistan?
 A.Liaquat Ali Khan
 B.Khawaja Nazimuddin
